@@ -1,6 +1,10 @@
 /**
+ * Class that implement a simple Real values Kalman filter with process and measurement white noise. The pattern
+ * consists of modeling the process and measurement noise and predict the value of the signal variables.
+ * 
  * @author Patrick Nicolas
  * @date July 19, 2013
+ * @see http://patricknicolas.blogspot.com
  */
 
 package algorithms
@@ -16,10 +20,21 @@ import org.apache.commons.math3.filter.MeasurementModel
 import scala.util.Random
 
 
+		/**
+		 * Class that emulate Gaussian noise for process and measurement
+		 * @param size number of variables
+		 * @param processNoiseGen Function that generate a Gaussian noise for the process
+		 * @param measureNoiseGen function that generate Gaussian noise for the measuring device
+		 * @IllegalArgumentException  if size < 1, and Gaussian noise functions are undefined
+		 */
 final class KalmanNoise(private val size : Int,
 						private val processNoiseGen: () => Double = Random.nextGaussian,
 		           		private val measureNoiseGen: () => Double = Random.nextGaussian) {
-	
+  
+	require(size > 0, "Undefined number of signal variables")
+    require(processNoiseGen != null, "Noise for the process is undefined" )
+    require(measureNoiseGen != null, "Noise for the measuring apparatus is undefined" )
+      
 	lazy val processNoise = generate( processNoiseGen )
     lazy val measurementNoise = generate( measureNoiseGen )
     
@@ -31,6 +46,9 @@ final class KalmanNoise(private val size : Int,
 }
 
 
+		/**
+		 * class that defines the models for the signal process and measuring devices
+		 */
 import KalmanPredictor._
 case class KalmanModel(	val A: DblMatrix, 
 		     	  		val B: DblMatrix,
@@ -39,19 +57,23 @@ case class KalmanModel(	val A: DblMatrix,
 		     	  		val R: DblMatrix,
 		     	  		val P0: DblMatrix) {
 	
-   require( A != null && H != null)
-   require(A.length == H.length)
+   require( A != null && H != null, "Covariance matrices for Kalman filter are undefined")
+   require(A.length == H.length, "Covariances matrices for process and measurement have incompatible dimension" )
    
    @inline
-   def processModel(x0 :Array[Double]) : ProcessModel = new DefaultProcessModel(A,B,Q,x0,P0)
+   def processModel(x0 :Array[Double]): ProcessModel = new DefaultProcessModel(A,B,Q,x0,P0)
    
    @inline
-   def measurementModel : MeasurementModel = new DefaultMeasurementModel(H, R)
+   def measurementModel: MeasurementModel = new DefaultMeasurementModel(H, R)
 }
 	    
 
-
-class KalmanPredictor(val model : KalmanModel, val noise : KalmanNoise) {
+		/**
+		 * Main Kalman estimator computation for a predefined process and noise model
+		 * @param model  model for the process or signal
+		 * @param noise  representation of process and measurement noides
+		 */
+final  class KalmanPredictor(val model : KalmanModel, val noise : KalmanNoise) {
     require( model != null && noise != null, "Kalman predictor has undefined model and noise")
      
 	def compute(u: Array[Double], x0: Array[Double], maxNumIters: Int = 50) : Unit =  {
@@ -73,7 +95,7 @@ class KalmanPredictor(val model : KalmanModel, val noise : KalmanNoise) {
     
     
 		// x = A.x+ B.u + w
-    private def newState(uVector : RealVector, xVector : RealVector, processModel : ProcessModel) : RealVector = {
+    private[this] def newState(uVector : RealVector, xVector : RealVector, processModel : ProcessModel) : RealVector = {
     	val A = processModel.getStateTransitionMatrix
 		val B = processModel.getControlMatrix
 		val w = noise.processNoise
@@ -81,7 +103,7 @@ class KalmanPredictor(val model : KalmanModel, val noise : KalmanNoise) {
     }
     
     	//  z + H.x + v
-    private def newMeasurement(xVector : RealVector) : RealVector = {
+    private[this] def newMeasurement(xVector : RealVector) : RealVector = {
     	val H = model.measurementModel.getMeasurementMatrix
     	val v = noise.measurementNoise
     	H.operate(xVector).add(v)
@@ -89,11 +111,17 @@ class KalmanPredictor(val model : KalmanModel, val noise : KalmanNoise) {
 }
 
 
+	/**
+	 * Companion object
+	 */
 object KalmanPredictor {
 	type DblMatrix = Array[Array[Double]]
 }
 
 
+		/**
+		 * Simple test driver for predicting the height of a projectile subjected to gravity
+		 */
 object KalmanTest extends App {
 	object Defaults {
 		final val IdentityMatrix = Array(Array[Double](1.0, 1.0), Array[Double](1.0, 1.0))

@@ -1,6 +1,9 @@
 /**
+ * Simple implementation of the Black-Scholes formula to price call options on underlying security.
+ * 
  * @author Patrick Nicolas
  * @date April 6, 2013
+ * @see  http://patricknicolas.blogspot.com
  */
 package algorithms
 
@@ -12,7 +15,8 @@ package algorithms
 	 * @param errorFactor convergence factor used in the exit condition of the computation of the option value
 	 */
 
-class BlackScholes(private val maxIters : Int, private val errorFactor: Double = 1e-4) {
+import BlackScholes._
+class BlackScholes(private val maxIters : Int, private val errorFactor: Double = EPS) {
    require( maxIters > 0 && maxIters < 1000, "Maximum number of iterations, " + maxIters.toString + " is incorrect" )
    require(errorFactor > 1e-10 && errorFactor < 1e-2, "Error factor, " + errorFactor + " used in Black-Scholes is out-of-boundas")
    
@@ -31,6 +35,9 @@ class BlackScholes(private val maxIters : Int, private val errorFactor: Double =
    def bs5f(x: Double*): Double = - x(0) * Math.exp(-x(1)*x(2)) 
    val bs5 =  new BlackScholesStep(bs5f)
 		
+   		/**
+   		 * Inner class to simulate the pricing of a call option
+   		 */
    class CallPriceSimulator(val S: Double, val X: Double, val r: Double, val sigma: Double, val T: Double) {
 		import org.apache.commons.math3.analysis.function.Gaussian
 
@@ -44,21 +51,21 @@ class BlackScholes(private val maxIters : Int, private val errorFactor: Double =
 		}
 		
 		@inline
-		val changeS = (S: Double) => bs1.compute(S,X); call_
+		protected[this] val changeS = (S: Double) => { bs1.compute(S,X); call_ }
 
-        val changer = (r : Double) => {
+        protected[this] val changer = (r : Double) => {
         	bs2.compute(r,T)
         	bs5.compute(X,r,T)
             call_
         }
         
-        val changeSigma = (sigma : Double) => {
+        protected[this] val changeSigma = (sigma : Double) => {
         	 bs3.compute(sigma, T)
         	 bs4.compute(sigma, T)
         	 call_
         }
         
-        private val call_ = () => {
+        private[this] val call_ = () => {
 			val gauss = new Gaussian
 			val d1 = (bs1.c + bs2.c + bs3.c)/bs4.c
 			S * gauss.value(d1) - bs5.c*gauss.value(d1 -bs4.c)
@@ -76,7 +83,9 @@ class BlackScholes(private val maxIters : Int, private val errorFactor: Double =
     
 
 
-
+    	/**
+    	 * <p>Method that implement the monteCarlo simulation for the Gaussian distribution</p>
+    	 */
     def monteCarlo(S : Double, X :Double, r : Double, sigma : Double, T : Double) : Option[Double] = {
         import scala.util.Random
         
@@ -104,6 +113,11 @@ class BlackScholes(private val maxIters : Int, private val errorFactor: Double =
 final class BlackScholesStep(val f : (Double*) => Double, var c : Double = 0.0) {
 	def compute(x:Double, y:Double) : Unit = { c = f(x, y) }
 	def compute(x:Double, y:Double, z:Double) : Unit = { c = f(x, y, z) }
+}
+
+
+object BlackScholes {
+   final val EPS = 1e-4
 }
 
 // ---------------------------------------  EOf ----------------------------------------------------

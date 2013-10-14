@@ -1,6 +1,9 @@
 /**
+ * Naive implementation of the Bloom Filter to manage the membership to very large set of elements
+ * 
  * @author Patrick Nicolas
  * @date October 2, 2013
+ * @see http://patricknicolas.blogspot.com
  */
 package algorithms
 
@@ -17,34 +20,43 @@ import java.math.BigInteger
 		 */
 final class BloomFilter(private val initialCapacity: Int, 
 					    private val numHashs: Int, 
-					   private val algorithm: String) {
+					    private val algorithm: String) {
+  
 	require( initialCapacity > 4, "Bloom filter capacity is too small")
 	require( numHashs > 0, "Bloom filter has no hash function")
 	
     private[this] val set = new Array[Byte](initialCapacity)
     private[this] var numElements = 0
     private[this] val digest = {
-		try {
-		  MessageDigest.getInstance(algorithm)
-		}
-		catch {
-			case e: NoSuchAlgorithmException => null
-		}
+		try { MessageDigest.getInstance(algorithm) }
+		catch {case e: NoSuchAlgorithmException => null }
 	}
     
 
-    def add(anyArray: Array[Any]): Unit = { 
+		/**
+		 * Adds an array of elements to this filter.
+		 */
+    def add(elements: Array[Any]): Unit = { 
     	if( digest != null) {
-    	   anyArray.foreach( getSet(_).foreach( set(_) = 1) )
-    	   numElements += anyArray.size
+    	   elements.foreach( getSet(_).foreach( set(_) = 1) )
+    	   numElements += elements.size
     	}
     }
     
+    	/**
+    	 * Add a single element to the filter
+    	 * @param el element to add to the filter
+    	 */
     @inline
-    def add(any: Any): Unit = this.add(Array[Any](any))
+    def add(el: Any): Unit = this.add(Array[Any](el))
     
+    	/**
+    	 * Test whether an element belongs to the set.
+    	 * @param el element for which the membership is evaluated
+    	 * @return true if element is not null, a digest exists and the element is a member, false otherwise
+    	 */
     @inline
-    def contains(any: Any): Boolean = if( digest != null) !getSet(any).exists( set(_) != 1) else false
+    def contains(el: Any): Boolean = if( digest != null && el != null) !getSet(el).exists( set(_) != 1) else false
     
     
     import BloomFilter._
@@ -54,20 +66,20 @@ final class BloomFilter(private val initialCapacity: Int,
 	    Math.abs(new BigInteger(1, digest.digest).intValue) % (set.size -1)
     }
     
-    private[this] def getSet(any: Any): Array[Int] = {
+    private[this] def getSet(el: Any): Array[Int] = {
        val newSet = new Array[Int](numHashs)
-	   newSet.update(0, hash(any.hashCode))
+	   newSet.update(0, hash(el.hashCode))
 	   getSet(newSet, 1)
 	   newSet
     }
 
     @scala.annotation.tailrec
-    private[this] def getSet(values: Array[Int], index: Int) : Boolean = {
-		if( index >= values.size)
+    private[this] def getSet(intElements: Array[Int], index: Int) : Boolean = {
+		if( index >= intElements.size)
 			true
 		else {
-			values.update(index, hash(values(index-1)))
-			getSet(values, index+1)
+			intElements.update(index, hash(intElements(index-1)))
+			getSet(intElements, index+1)
 		}
 	}
 }
