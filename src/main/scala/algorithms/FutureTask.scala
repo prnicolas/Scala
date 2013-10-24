@@ -18,38 +18,51 @@ import scala.util.Try
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-case class Launcher(val numIteration : Int)
+	/**
+	 * Messages
+	 */
+case class Launch(val numIterations: Int)
 case class Receiver
 
 		/**
-		 * Create a task with a future computation defiend as a reference
-		 * @param futureTask  reference to the actor th
+		 * Create a task that trigger a another task/actor to simulate future
 		 */
-class MainTask(val futureTask : ActorRef) extends Actor {
-	require( futureTask != null, "Undefined reference to future task or actor")
+class MainTask extends Actor {
 	
 	implicit val timeout = Timeout(3500)
-	 
+	val futureTaskRef: ActorRef = context.actorOf(Props(new FutureTask("myTask", 500)), name="MyTask")
+	var completed = false
+	
 	override def receive = {
-		case launch : Launcher => {
-			Thread.sleep(launch.numIteration)
-			val f = futureTask ? new Receiver
-			val results = Await.result(f, timeout.duration).asInstanceOf[String]
-			exit
+		case launch: Launch => {
+			Thread.sleep(launch.numIterations)
+			futureTaskRef ! new Receiver
+		}
+		case "Done" => {
+		     context.stop(futureTaskRef)
+		     context.stop(self)
 		}
 		case _ => println("Undefined message")
 	}
+	
+	override def postStop: Unit = println("Main task exits")
 }
 
 
-class FutureTask extends Actor {
+class FutureTask(val myName: String, val mySleep: Long) extends Actor {
+    require(mySleep > 200 && mySleep < 5000, "Sleeping duration is out of bounds")
+    
 	override def receive = {
-		case receive : Receiver  => {
-			Thread.sleep(1000)
+		case receive: Receiver  => {
+			Thread.sleep(mySleep)
 			sender ! "Done"
 		}
 		case _ => println("Failed handler")
 	}
+	
+    override def postStop: Unit = println("Future task exits")
 }
+
+
 
 // ------------------------  EOF -----------------------------------------------------------------------------
