@@ -1,10 +1,13 @@
 /**
  * Polymorphic implementation of the Runge-Kutta family of formula to resolve Ordinary Differential Equations.
+ * This code is provided solely for the purpose of illustrate concepts introduced or described 
+ * in some of the  of the post in the blog
  * 
  * @author Patrick Nicolas
  * @date June 6, 2013
  * @see http://patricknicolas.blogspot.com
  */
+package algorithms
 
 
 object RungeKuttaForms extends Enumeration {	

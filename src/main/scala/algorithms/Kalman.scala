@@ -1,12 +1,13 @@
 /**
  * Class that implement a simple Real values Kalman filter with process and measurement white noise. The pattern
  * consists of modeling the process and measurement noise and predict the value of the signal variables.
+ * This code is provided solely for the purpose of illustrate concepts introduced or described 
+ * in some of the  of the post in the blog
  * 
  * @author Patrick Nicolas
  * @date July 19, 2013
  * @see http://patricknicolas.blogspot.com
  */
-
 package algorithms
 
 import org.apache.commons.math3.filter.KalmanFilter

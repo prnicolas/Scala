@@ -1,6 +1,8 @@
 /**
  * Classes that illustrates the composition of Futures in Scala 2.10.2 and Akka 2.14 framework, using the for-comprehensive loop monad.
  * Thread.sleep is used to emulate a lengthy computation
+ * This code is provided solely for the purpose of illustrate concepts introduced or described 
+ * in some of the  of the post in the blog
  * 
  * @author Patrick Nicolas
  * @date July 23, 2013

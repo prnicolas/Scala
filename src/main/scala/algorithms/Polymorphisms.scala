@@ -1,9 +1,13 @@
 /**
+ * This code is provided solely for the purpose of illustrate concepts introduced or described 
+ * in some of the  of the post in the blog
+ * 
  * @author Patrick Nicolas
  * @date August 9, 2013
  * 
  * THe following classes and traits illustrate the different class of polymorphism in Scala.
  */
+package algorithms
 
 trait Collection[T <: Double]  {
 	 def += (t:T) : Boolean

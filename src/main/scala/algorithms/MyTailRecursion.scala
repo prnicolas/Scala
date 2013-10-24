@@ -1,8 +1,12 @@
 /**
+ * This code is provided solely for the purpose of illustrate concepts introduced or described 
+ * in some of the  of the post in the blog
+ * 
  * @author Patrick Nicolas
  * @date September 4, 2013
+ * @see http://patricknicolas.blogspot.com
  */
-
+package algorithms
 
 	/**
 	 * Class that evaluate the performance of tail recursion, comparatively to iterative methods

@@ -1,5 +1,7 @@
 /**
  * Naive implementation of the Bloom Filter to manage the membership to very large set of elements
+ * This code is provided solely for the purpose of illustrate concepts introduced or described 
+ * in some of the  of the post in the blog
  * 
  * @author Patrick Nicolas
  * @date October 2, 2013
@@ -37,6 +39,8 @@ final class BloomFilter(private val initialCapacity: Int,
 		 * Adds an array of elements to this filter.
 		 */
     def add(elements: Array[Any]): Unit = { 
+        require( elements != null && elements.size > 0, "Cannot add undefined array of element to the Bloom filter")
+        
     	if( digest != null) {
     	   elements.foreach( getSet(_).foreach( set(_) = 1) )
     	   numElements += elements.size
@@ -48,7 +52,7 @@ final class BloomFilter(private val initialCapacity: Int,
     	 * @param el element to add to the filter
     	 */
     @inline
-    def add(el: Any): Unit = this.add(Array[Any](el))
+    def add(el: Any): Unit = { require(el != null, "Cannot add undefined item into Bloom Filter"); this.add(Array[Any](el))  }
     
     	/**
     	 * Test whether an element belongs to the set.
@@ -95,14 +99,5 @@ object BloomFilter {
     }
 }
 
-import BloomFilter._
-object BloomFilterTest extends App {
-	val filter = new BloomFilter(1000, 1000, "SHA")
-	final val newValues = Array[Any](57, 97, 91, 23, 67, 33)
-	filter.add(newValues)
-	
-	println( filter.contains(22) )
-	println( filter.contains(23) )
-}
 
 // --------------------------------------------  EOF -------------------------------------------

@@ -1,10 +1,12 @@
 /**
  * Classes that illustrates the use of Futures in Scala 2.10.2 and Akka 2.14 framework. The pattern consists of a 
  * main task, 'MainTask' that launches than blocks on a future task 'FutureTask' 
+ * This code is provided solely for the purpose of illustrate concepts introduced or described 
+ * in some of the  of the post in the blog
+ * 
  * @author Patrick Nicolas
  * @date July 23, 2013
  * 
-
  */
 package algorithms
 

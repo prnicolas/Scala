@@ -1,11 +1,14 @@
 /**
+ * This code is provided solely for the purpose of illustrate concepts introduced or described 
+ * in some of the  of the post in the blog
+ * 
  * @author Patrick Nicolas
  * @date June 17, 2013
  * 
  * Test driver to evaluate the relative performance of the Option monad comparatively to
  * error code and Exceptions
  */
-
+package algorithms
 
 object OptionPerformance extends App {
 	def divOption(x : Double, y : Double) : Option[Double] = {

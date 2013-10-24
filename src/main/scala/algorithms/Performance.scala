@@ -1,10 +1,13 @@
 /**
+ * This code is provided solely for the purpose of illustrate concepts introduced or described 
+ * in some of the  of the post in the blog
+ * 
  * @author Patrick Nicolas
  * @date May 14, 2013
  * 
  * The following classes evaluates the relative performance of several forms of loops in Scala
  */
-
+package algorithms
 
 import scala.util.Random
 import scala.util.Sorting
