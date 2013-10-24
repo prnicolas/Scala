@@ -72,13 +72,28 @@ class BlackScholes(private val maxIters : Int, private val errorFactor: Double =
 		}
 	}
 	
-    def callPrice(S : Double, X : Double, r : Double, sigma : Double, T : Double) : Option[Double] = {
+    def callPrice(variables: Array[Double]): Option[Double] = {
+        require(variables != null && variables.size == 5, "Cannot compute call price with undefined variables")
+        this.callPrice(variables(0), variables(1), variables(2), variables(3), variables(4))
+    }
+   
+    def callPrice(S: Double, X: Double, r: Double, sigma: Double, T: Double): Option[Double] = {
         import org.apache.commons.math3.analysis.function.Gaussian
-    	
-        val d1 = (Math.log(S/X) + (r + 0.5*sigma * sigma) * T) / (sigma * Math.sqrt(T))
-        val d2 = d1 - sigma * Math.sqrt(T)
-        val gauss = new Gaussian
-        Some(S * gauss.value(d1) - X * Math.exp(-r * T) * gauss.value(d2))
+    	require(S >= 0.0, "S: " +S.toString + " is out of bounds")
+        require(X >= 0.0, "S: " +S.toString + " is out of bounds")
+        require(r >= 0.0, "S: " +S.toString + " is out of bounds")    	
+        require(sigma >= 0.0, "S: " +S.toString + " is out of bounds")
+        require(T >= 0.0, "S: " +S.toString + " is out of bounds")
+            	
+        if( S < EPS || X < EPS || r < EPS || sigma < EPS || T < EPS)
+            Some(0.0)
+        
+        else {
+	        val d1 = (Math.log(S/X) + (r + 0.5*sigma * sigma) * T) / (sigma * Math.sqrt(T))
+	        val d2 = d1 - sigma * Math.sqrt(T)
+	        val gauss = new Gaussian
+	        Some(S * gauss.value(d1) - X * Math.exp(-r * T) * gauss.value(d2))
+        }
     }
     
 
