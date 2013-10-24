@@ -10,23 +10,6 @@
 package algorithms
 
 
-object RungeKuttaForms extends Enumeration {	
-   val RK3 = Array(Array[Double](0.0, 0.0,  1/3,  0.0,  0,0), 
-			       Array[Double](0.5, 0.5,  0.0,  2/3,  0.0),
-			       Array[Double](1.0, 0.0, -1.0,  0.0,  1/3))
-			       
-   val RK4 = Array(Array[Double](0.0, 0.0, 0.1666, 0.0,  0,0,  0.0), 
-			       Array[Double](0.5, 0.5, 0.0, 0.3333,  0.0,  0.0 ),
-			       Array[Double](0.5, 0.0, 0.5, 0.0, 0.3334,  0.0),
-			       Array[Double](1.0, 0.0, 0.0, 1.0,  0.0,  0.1667))
-			             
-   val RKFELBERG = Array(Array[Double](0.0,    0.0,        25/216,    0.0,        0.0,        0.0,        0.0, 0.0), 
-			             Array[Double](0.25,   0.25,       0.0,       0.0,        0.0,        0.0,        0.0, 0.0 ),
-			             Array[Double](3/8,    3/32,       0.0,       0.0,        1408/2565,  0.0,        0.0, 0.0),
-			             Array[Double](12/13,  1932/2197, -7200/2197, 7296/2197,  0.0,        2197/4101,  0.0, 0.0),
-			             Array[Double](1.0,    439/216,   -8.0,       3680/513,  -845/4104,   0.0,       -1/5, 0.0),
-			             Array[Double](0.5,   -8/27,       2.0,      -3544/2565,  1859/4104, -11/40,      0.0, 0.0))
-}
 
 
 
@@ -36,13 +19,18 @@ object RungeKuttaForms extends Enumeration {
 	 * @param adjustStep  local function used to adjust the integration step
 	 * @param adjustParameters  parameters used to compute the first order derivative
 	 */
-class ODESolver(val rungeKuttaForm : Array[Array[Double]],
-				val adjustStep : (Double, AdjustParameters) => (Double),
-				val adjustParameters : AdjustParameters) {
+import RungeKutta._
+class RungeKutta(private val rungeKuttaKey: String,
+				 private val adjustStep: (Double, AdjustParameters) => (Double),
+				 private val adjustParameters: AdjustParameters) {
   
-	require( rungeKuttaForm != null, "The form of Runge-Kutta formula is undefined")
+	require( rungeKuttaKey != null && rungeKuttaForms.contains(rungeKuttaKey), "The form of Runge-Kutta formula is undefined")
 	require( adjustStep != null, "The integration step adjusting method is undefined")
 	require( adjustParameters != null, "Parameters to compute the first order derivative are undefined")
+	
+	private val rungeKuttaForm = rungeKuttaForms.getOrElse(rungeKuttaKey, null)
+	
+	def this(rungeKuttaKey: String, adjustParameters: AdjustParameters) = this(rungeKuttaKey, adjustingStep, adjustParameters)
 	
 	final class StepIntegration(val coefs : Array[Array[Double]] ) { 
 		require( coefs != null && coefs.length > 0, "Cannot solve ODE with undefined coefs")
@@ -54,8 +42,7 @@ class ODESolver(val rungeKuttaForm : Array[Array[Double]],
 			 * @param dx  step of integration 
 			 * @param derivative local function that defined the derivative
 			 */
-		def compute(x: Double, y: Double, dx: Double,			   	 
-				    derivative : (Double, Double) => Double) : Double = {
+		def compute(x: Double, y: Double, dx: Double, derivative: (Double,Double) => Double): Double = {
               require( dx > 1e-10 && dx < 10.9, "Integration step " + dx + " is out of bounds")
               require( derivative != null, "Derivative function is undefined")
               
@@ -83,7 +70,7 @@ class ODESolver(val rungeKuttaForm : Array[Array[Double]],
 		 * @param xEnd end of the integration range
 		 * @param derivative  local function (x,y) => f(x,y) that defined the derivative formula
 		 */
-	def solve(xBegin: Double, xEnd: Double, derivative: (Double, Double) => Double) : Double = {
+	def solve(xBegin: Double, xEnd: Double, derivative: (Double, Double) => Double): Double = {
 	    require( derivative != null, "Derivative function is undefined")
 	    require( Math.abs(xBegin - xEnd) > 1e-10, "Integration interval " + (xEnd - xBegin) + " is too small")
 	    
@@ -91,7 +78,7 @@ class ODESolver(val rungeKuttaForm : Array[Array[Double]],
 		
 		@scala.annotation.tailrec
 		def solve(x: Double, y: Double, dx: Double, sum: Double): Double = {
-			val z: Double = rungeKutta.compute(x, y, dx, derivative)
+			val z = rungeKutta.compute(x, y, dx, derivative)
 		    if( x >= xEnd)
 		    	sum + z
 		    else {
@@ -99,17 +86,57 @@ class ODESolver(val rungeKuttaForm : Array[Array[Double]],
 		    	solve(x + dx, z, dx, sum+z)
 		    }
 		}
-	    solve(xBegin, 0.0,  adjustParameters.initial, 0.0)
+	    solve(xBegin, 0.0,  adjustParameters.dx0, 0.0)
     }
 	
 }
 
 
-case class AdjustParameters(val maxDerivativeValue : Double = 0.01,
-							val minDerivativeValue : Double = 0.00001,
-							val gamma : Double = 1.0) {
-	val initial = 0.5*(maxDerivativeValue + minDerivativeValue)
+case class AdjustParameters(val maxDerivativeValue: Double = 0.01,
+							val minDerivativeValue: Double = 0.00001,
+							val gamma: Double = 1.0) {
+    
+   require(gamma > 1e-5, "Gamma has incorrect value: " + gamma)
+   require(minDerivativeValue > 1e-6, "minDerivativeValue has incorrect value: " + minDerivativeValue)
+   require(maxDerivativeValue >  minDerivativeValue, "Min derivative " + minDerivativeValue + " > max derivative " + maxDerivativeValue)
+    
+   lazy val dx0 = 2.0*gamma/(maxDerivativeValue + minDerivativeValue)
 }
+
+
+object RungeKutta {	
+   val adjustingStep = (diff: Double, adjustParams: AdjustParameters) => {
+     
+      val dx = Math.abs(diff)*adjustParams.dx0/adjustParams.gamma
+      if( dx < adjustParams.minDerivativeValue) 
+         adjustParams.minDerivativeValue
+      else if ( dx > adjustParams.maxDerivativeValue)
+        adjustParams.maxDerivativeValue
+      else
+          dx
+   }
+  
+   val RK3 = Array(Array[Double](0.0, 0.0,  1/3,  0.0,  0,0), 
+			       Array[Double](0.5, 0.5,  0.0,  2/3,  0.0),
+			       Array[Double](1.0, 0.0, -1.0,  0.0,  1/3))
+			       
+   val RK4 = Array(Array[Double](0.0, 0.0, 0.1666, 0.0,  0,0,  0.0), 
+			       Array[Double](0.5, 0.5, 0.0, 0.3333,  0.0,  0.0 ),
+			       Array[Double](0.5, 0.0, 0.5, 0.0, 0.3334,  0.0),
+			       Array[Double](1.0, 0.0, 0.0, 1.0,  0.0,  0.1667))
+			             
+   val RKFELBERG = Array(Array[Double](0.0,    0.0,        25/216,    0.0,        0.0,        0.0,        0.0, 0.0), 
+			             Array[Double](0.25,   0.25,       0.0,       0.0,        0.0,        0.0,        0.0, 0.0 ),
+			             Array[Double](3/8,    3/32,       0.0,       0.0,        1408/2565,  0.0,        0.0, 0.0),
+			             Array[Double](12/13,  1932/2197, -7200/2197, 7296/2197,  0.0,        2197/4101,  0.0, 0.0),
+			             Array[Double](1.0,    439/216,   -8.0,       3680/513,  -845/4104,   0.0,       -1/5, 0.0),
+			             Array[Double](0.5,   -8/27,       2.0,      -3544/2565,  1859/4104, -11/40,      0.0, 0.0))
+   
+	final val rungeKuttaForms = Map[String, Array[Array[Double]]] (
+	    "RK3" -> RK3, "RK4" -> RK4, "RKFELBERG" -> RKFELBERG
+	)
+}
+
 
 
 // ------------------------------------  EOF -----------------------------------------------
