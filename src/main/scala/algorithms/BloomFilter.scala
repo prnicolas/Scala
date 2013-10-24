@@ -26,6 +26,8 @@ final class BloomFilter(private val initialCapacity: Int,
   
 	require( initialCapacity > 4, "Bloom filter capacity is too small")
 	require( numHashs > 0, "Bloom filter has no hash function")
+	require( algorithm != null, "Bloom filter has bit position algorithm")
+	require(initialCapacity > numHashs, "Bloom filter capacity exceeds number of hash functions")
 	
     private[this] val set = new Array[Byte](initialCapacity)
     private[this] var numElements = 0
