@@ -7,11 +7,10 @@
  */
 package algorithms
 
-
 import org.scalatest.FunSuite
 
 
-class BloomFilterSuite extends FunSuite {
+final class BloomFilterSuite extends FunSuite {
   import BloomFilter._
       
   test("Basic use case") {

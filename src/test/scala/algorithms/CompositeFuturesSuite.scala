@@ -11,6 +11,7 @@ package algorithms
 import org.scalatest.FunSuite
 
 class CompositeFuturesSuite extends FunSuite {
+  
    test("Primary test case") {
       val result =  new CompositeFutures(2, 2).compositeFuture
       assert( result  == 57, "Futures composition result: " + result + " is incorrect")
