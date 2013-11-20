@@ -4,6 +4,7 @@
  * in some of the  of the post in the blog
  * 
  * @author Patrick Nicolas
+ * @date October 7, 2013
  */
 package algorithms
 
