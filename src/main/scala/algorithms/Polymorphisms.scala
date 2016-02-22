@@ -31,7 +31,7 @@ trait Concatenation[M[_]] {
 import scala.collection.GenSeq
 import scala.collection.mutable.{ArraySeq, ArrayBuffer}
 
-	// This is a F-bounded polymorphism  in PN2 branch
+	// This is a F-bounded polymorphism - merged
 trait Bucket[A <: Bucket[A]] extends Seq[A]
 
 
