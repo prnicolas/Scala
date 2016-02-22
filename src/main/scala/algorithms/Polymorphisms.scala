@@ -32,6 +32,7 @@ import scala.collection.GenSeq
 import scala.collection.mutable.{ArraySeq, ArrayBuffer}
 
 
+// This is a new comment for master
 trait Bucket[A <: Bucket[A]] extends Seq[A]
 
 
