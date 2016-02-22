@@ -32,7 +32,7 @@ import scala.collection.GenSeq
 import scala.collection.mutable.{ArraySeq, ArrayBuffer}
 
 
-// This is a new comment for master
+	// This is a F-bounded polymorphism - merged
 trait Bucket[A <: Bucket[A]] extends Seq[A]
 
 
