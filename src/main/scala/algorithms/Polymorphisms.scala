@@ -14,7 +14,6 @@ trait Collection[T <: Double]  {
 	 def -= : T 
 }
 
-
 class OrderedCollection[T <: Double] extends Collection[T] {
 	import scala.collection.mutable.TreeSet
 	
@@ -22,7 +21,6 @@ class OrderedCollection[T <: Double] extends Collection[T] {
 	override def += (t:T) : Boolean = buffer.add(t)
 	override def -= : T =  { val top = buffer.head; buffer.remove(top); top }
 }
-
 
 trait Concatenation[M[_]] {
 	 def add [T](t:T) : M[T]
