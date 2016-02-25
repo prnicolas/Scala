@@ -11,6 +11,7 @@ package algorithms
 
 /**
 	* Class to demonstrate currying in collections
+	* His is new
 	* @param values
 	* @tparam T
 	*/
