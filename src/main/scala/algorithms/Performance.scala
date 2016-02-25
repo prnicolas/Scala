@@ -17,7 +17,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.ListBuffer
 
 
-		// THis is a change in PN2
+		// THis is a change in PN2  or not
 class Performance(numIters : Int, size : Int) {
 	lazy val foreachLoop : Array[Long] = new Array[Long](numIters)
 	lazy val mapLoop : Array[Long] = new Array[Long](numIters)
