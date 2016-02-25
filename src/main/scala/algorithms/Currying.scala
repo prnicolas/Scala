@@ -9,7 +9,11 @@
  */
 package algorithms
 
-
+/**
+	* Class to demonstrate currying in collections
+	* @param values
+	* @tparam T
+	*/
 class CurriedCollection[T](val values: Array[T]) {
    def foldLeft2[U](u: U, op: (U,T) => U): U = values.foldLeft[U](u)((u, t) => op(u,t))
    def foldLeft[U](u: U)(op: (U,T) => U): U = this.foldLeft2(u, op)    
