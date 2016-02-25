@@ -34,8 +34,7 @@ final class BloomFilter(private val initialCapacity: Int,
     private[this] val digest = {
 		try { MessageDigest.getInstance(algorithm) }
 		catch {case e: NoSuchAlgorithmException => null }
-	}
-    
+	
 
 		/**
 		 * Adds an array of elements to this filter.
