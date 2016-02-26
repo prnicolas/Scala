@@ -1,7 +1,7 @@
 /**
  * This code is provided solely for the purpose of illustrate concepts introduced or described 
  * in some of the  of the post in the blog
- * 
+ * PN2 ===
  * @author Patrick Nicolas
  * @date June 17, 2013
  * 
@@ -10,6 +10,9 @@
  */
 package algorithms
 
+	/**
+	*  Let start with a change in PN2
+        */
 object OptionPerformance extends App {
 	def divOption(x : Double, y : Double) : Option[Double] = {
 		 if( Math.abs(y) < 1e-10) None else Some(x/y)
