@@ -10,7 +10,6 @@
  */
 package algorithms
 
-
     /**
     * This a master change No 3
     */
