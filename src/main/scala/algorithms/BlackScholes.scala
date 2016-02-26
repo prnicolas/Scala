@@ -2,7 +2,11 @@
  * Simple implementation of the Black-Scholes formula to price call options on underlying security. 
  * This code is provided solely for the purpose of illustrate concepts introduced or described 
  * in some of the  of the post in the blog
+<<<<<<< HEAD
  * Change on Master #4
+=======
+ * Change on Master waiting for 3
+>>>>>>> Waiting ofr 3
  * @author Patrick Nicolas
  * @date April 6, 2013
  * @see  http://patricknicolas.blogspot.com
