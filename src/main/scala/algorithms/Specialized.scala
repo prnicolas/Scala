@@ -7,12 +7,12 @@
  * @date October 11, 2013
  * @see http://patricknicolas.blogspot.com
  */
-
 case class Item
 
 	/**
 	 * Class that illustrates the issue of type erasure in the JVM. The parameterized type List[String] and
 	 * List[Int] are not preserved by the compiler and therefore will throw a warning message.
+	 * Changes in PN2
 	 * @author Patrick Nicolas
 	 * @param xs  list of type U bounded by Item
 	 * @param f implicit conversion from any parameterized type to its ordered equivalent to support compare.
