@@ -10,9 +10,10 @@
  */
 package algorithms
 
-	/**
-	*  Let start with a change in PN2
-        */
+
+    /**
+    * This a master change
+    */
 object OptionPerformance extends App {
 	def divOption(x : Double, y : Double) : Option[Double] = {
 		 if( Math.abs(y) < 1e-10) None else Some(x/y)
