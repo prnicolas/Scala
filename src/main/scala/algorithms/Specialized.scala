@@ -2,7 +2,7 @@
  * Evaluation and comparison of solution to process type erasure.
  * This code is provided solely for the purpose of illustrate concepts introduced or described 
  * in some of the  of the post in the blog
- * 
+ * This is a master......
  * @author Patrick Nicolas
  * @date October 11, 2013
  * @see http://patricknicolas.blogspot.com
