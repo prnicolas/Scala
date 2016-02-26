@@ -11,7 +11,7 @@
 package algorithms
 
     /**
-    * This a master change No 5
+    * This a master change No 6
     */
 object OptionPerformance extends App {
 	def divOption(x : Double, y : Double) : Option[Double] = {
