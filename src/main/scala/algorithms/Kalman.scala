@@ -3,7 +3,7 @@
  * consists of modeling the process and measurement noise and predict the value of the signal variables.
  * This code is provided solely for the purpose of illustrate concepts introduced or described 
  * in some of the  of the post in the blog
- * 
+ *  ================   PN-1 =====================
  * @author Patrick Nicolas
  * @date July 19, 2013
  * @see http://patricknicolas.blogspot.com
