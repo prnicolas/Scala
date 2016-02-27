@@ -2,7 +2,7 @@
  * Naive implementation of the Bloom Filter to manage the membership to very large set of elements
  * This code is provided solely for the purpose of illustrate concepts introduced or described 
  * in some of the  of the post in the blog
- * 
+ * Change made in Master
  * @author Patrick Nicolas
  * @date October 2, 2013
  * @see http://patricknicolas.blogspot.com
