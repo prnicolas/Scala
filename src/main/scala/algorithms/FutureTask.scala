@@ -3,7 +3,7 @@
  * main task, 'MainTask' that launches than blocks on a future task 'FutureTask' 
  * This code is provided solely for the purpose of illustrate concepts introduced or described 
  * in some of the  of the post in the blog
- * 
+ * Master changes
  * @author Patrick Nicolas
  * @date July 23, 2013
  * 
