@@ -1,7 +1,7 @@
 /**
  * This code is provided solely for the purpose of illustrate concepts introduced or described 
  * in some of the  of the post in the blog
- * 
+ * Changes in Master
  * @author Patrick Nicolas
  * @date September 23, 2013
  */
