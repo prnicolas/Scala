@@ -4,7 +4,7 @@
  * in some of the  of the post in the blog
  * 
  * Note: The compiler require the CPS plug-in, using the continuations=enable in the command line
- * 
+ * Changes made on Master
  * @author Patrick Nicolas
  * @date October 7, 2013
  * @see http://patricknicolas.blogspot.com
