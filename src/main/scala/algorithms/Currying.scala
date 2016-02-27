@@ -2,7 +2,7 @@
  * Class to illustrate implementation of method currying using foldLeft high order functions
  * This code is provided solely for the purpose of illustrate concepts introduced or described 
  * in some of the  of the post in the blog
- * 
+ * Changes made on Master
  * @author Patrick Nicolas
  * @date October 2, 2013
  * @see http://patricknicolas.blogspot.com
